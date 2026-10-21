@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Booking | DJ Diplomata</title>
+  <meta name="description" content="Peça uma data de DJ Diplomata em Curitiba. O formulário monta o briefing e guarda neste navegador.">
+  <meta name="theme-color" content="#0a0908">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <header class="site-header">
+        <a class="logo logo--wide" href="index.html" aria-label="DJ Diplomata, início">
+      <img class="mark mark-brand" src="assets/brand/logomark.svg" width="46" height="46" alt="">
+      <img class="logo-horizontal" src="assets/brand/logo-horizontal.svg" width="200" height="40" alt="DJ Diplomata">
+      <span class="logo-word">Diplomata</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+    <nav class="nav" id="menu" aria-label="Principal">
+      <a href="index.html">Início</a>
+      <a href="sobre.html">Trajetória</a>
+      <a href="midia.html">Mídia</a>
+      <a href="agenda.html">Agenda</a>
+      <a href="lp.html">LP</a>
+      <a href="press-kit.html">Press kit</a>
+      <a href="campanhas.html">Campanhas</a>
+      <a href="contato.html" aria-current="page">Contato</a>
+    </nav>
+    <a class="btn btn-fire header-cta" href="#booking-form">Briefing</a>
+  </header>
+  <main id="conteudo" class="wrap page-intro">
+    <p class="eyebrow">Contato</p>
+    <h1>Chama para a data</h1>
+    <p class="lede">Não há telefone publicado, então nenhum número foi inventado. O formulário monta o briefing, guarda neste navegador e deixa pronto para o artista enviar quando o canal oficial estiver confirmado.</p>
+
+    <div class="visual-strip reveal" aria-label="Referência visual">
+      <img src="assets/images/artista/rosto.png" width="640" height="480" alt="Rosto de DJ Diplomata">
+      <img src="assets/images/artista/cabine.png" width="640" height="480" alt="DJ Diplomata na cabine">
+      <img src="assets/images/artista/estudio-largo.jpg" width="640" height="480" alt="Retrato de estúdio">
+    </div>
+
+    <section class="section split even">
+      <form class="form panel" id="booking-form" novalidate>
+        <h2 class="page-title">Briefing</h2>
+        <label>Nome <input name="nome" type="text" autocomplete="name" required></label>
+        <label>E-mail <input name="email" type="email" autocomplete="email" required></label>
+        <label>Telefone <input name="telefone" type="tel" autocomplete="tel" placeholder="Opcional"></label>
+        <label>Cidade do evento <input name="cidade" type="text" value="Curitiba" autocomplete="address-level2"></label>
+        <label>Tipo de data
+          <select name="tipo" required>
+            <option value="">Selecionar</option>
+            <option>Club / casa noturna</option>
+            <option>Open air</option>
+            <option>After</option>
+            <option>Festa privada ou marca</option>
+            <option>Noite da LP Credenciais</option>
+          </select>
+        </label>
+        <label>Data desejada <input name="data" type="date"></label>
+        <label>O que — a festa <textarea name="mensagem" required placeholder="Bairro, horário, público, se — abertura, pico ou fechamento."></textarea></label>
+        <label class="check"><input name="consent" type="checkbox" required><span>Autorizo guardar este briefing neste navegador para responder o pedido. <a href="privacidade.html">Política de privacidade</a>.</span></label>
+        <button class="btn btn-fire" type="submit">Gerar briefing</button>
+      </form>
+      <div>
+        <article class="card">
+          <h3>Praça</h3>
+          <p>Curitiba e região metropolitana. Casas de referência na <a href="agenda.html">agenda</a>.</p>
+        </article>
+        <article class="card" style="margin-top:1rem">
+          <h3>Canal público</h3>
+          <p>Instagram oficial ainda sem grade confirmada. A leitura está em <a href="campanhas.html">Campanhas</a>.</p>
+        </article>
+        <article class="card" style="margin-top:1rem">
+          <h3>Imprensa</h3>
+          <p>Bio e ficha em <a href="press-kit.html">press kit</a>.</p>
+        </article>
+        <div id="booking-status" hidden style="margin-top:1rem">
+          <h3>Texto pronto</h3>
+          <pre class="copy-block panel"></pre>
+          <div class="actions">
+            <button class="btn btn-ink" type="button" data-copy="#booking-status pre">Copiar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div><strong>DJ Diplomata</strong><p>Curitiba e região metropolitana.</p></div>
+      <div><a href="agenda.html">Casas</a><br><a href="press-kit.html">Press kit</a></div>
+      <div><a href="privacidade.html">Privacidade</a><br><button type="button" data-open-prefs>Permissões</button></div>
+    </div>
+  </footer>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+# Quando o domínio estiver no ar, publique um sitemap absoluto.

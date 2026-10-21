@@ -1,0 +1,16 @@
+DJ Diplomata — ficha
+
+Nome artístico: DJ Diplomata
+Praça: Curitiba, Paraná, e região metropolitana
+Ofício: DJ para club, open air, after e festa privada
+LP em campanha: Credenciais (título de trabalho, sem distribuição confirmada)
+Fotos de imprensa: retrato-estudio.jpg, estudio-largo.jpg, rosto.png, cabine.png, arquibancada.png, praia.jpg, recorte.png
+Criativos: retrato-campanha.jpg, fundo-cabine.jpg, fundo-openair.jpg, lp-credenciais.jpg
+Casas de referência da cidade: Club Vibe (Batel), Park Art SuperClub (Pinhais), Pedreira Paulo Leminski (Abranches), Danghai Club (Centro, programação mista)
+Instagram oficial: a confirmar. A leitura de 20/10/2026 não encontrou posts públicos no nome.
+Spotify / SoundCloud oficiais: a confirmar. Não publicar link de homônimo como se fosse o artista.
+Booking: formulário do site gera texto para o artista enviar. Não há telefone publicado.
+Paleta: preto #0a0908, ouro #d4b483, carmim #a32045, papel #f3eee6
+Marca: logomark.svg, logo-horizontal.svg, favicon.svg — guia em press/identidade-visual.txt
+Raster social: og-diplomata.jpg (OG), story-identidade.jpg (story), stickers em assets/images/criativos/
+Tipografia: Cormorant Garamond no nome, Syne nos títulos, Outfit no texto
