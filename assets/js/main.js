@@ -2,9 +2,9 @@
   "use strict";
 
   var STORAGE = {
-    consent: "dd.consent.v1",
-    leads: "dd.leads.v1",
-    presave: "dd.presave.v1"
+    consent: "ns.consent.v1",
+    leads: "ns.leads.v1",
+    presave: "ns.presave.v1"
   };
 
   var defaultConsent = {
@@ -56,15 +56,20 @@
     var nav = document.querySelector("#menu");
     if (!header || !toggle || !nav) return;
 
+    function setNavOpen(open) {
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      toggle.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
+    }
+
     toggle.addEventListener("click", function () {
       var open = nav.classList.toggle("is-open");
-      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      setNavOpen(open);
     });
 
     nav.querySelectorAll("a").forEach(function (link) {
       link.addEventListener("click", function () {
         nav.classList.remove("is-open");
-        toggle.setAttribute("aria-expanded", "false");
+        setNavOpen(false);
       });
     });
 
@@ -115,6 +120,12 @@
     );
   }
 
+  function internalPage(file) {
+    var path = String(window.location.pathname || "").replace(/\\/g, "/");
+    var nested = path.indexOf("/pages/") !== -1;
+    return (nested ? "" : "pages/") + file;
+  }
+
   function dialogTemplate() {
     return (
       '<dialog id="prefs-dialog" aria-labelledby="prefs-title">' +
@@ -133,7 +144,7 @@
             '<button class="btn btn-ghost" type="button" data-erase>Apagar dados locais</button>' +
             '<button class="btn btn-ghost" type="button" data-close-prefs>Fechar</button>' +
           "</div>" +
-          '<p class="meta"><a href="privacidade.html">Ler a política completa</a></p>' +
+          '<p class="meta"><a href="' + internalPage("privacidade.html") + '">Ler a política completa</a></p>' +
         "</form>" +
       "</dialog>"
     );
@@ -171,7 +182,7 @@
     applyPrefs(next);
     var banner = document.getElementById("cookie-banner");
     if (banner) banner.hidden = true;
-    document.dispatchEvent(new CustomEvent("dd:consent", { detail: next }));
+    document.dispatchEvent(new CustomEvent("ns:consent", { detail: next }));
   }
 
   function initPrivacy() {
@@ -276,7 +287,7 @@
     var url = URL.createObjectURL(blob);
     var link = document.createElement("a");
     link.href = url;
-    link.download = "dados-dj-diplomata.json";
+    link.download = "dados-dj-nicolas-silva.json";
     link.click();
     URL.revokeObjectURL(url);
   }
@@ -329,7 +340,7 @@
         leads.push(lead);
         write(STORAGE.leads, leads);
         var brief = [
-          "Booking DJ Diplomata",
+          "Booking DJ Nicolas Silva",
           "Nome: " + lead.nome,
           "E-mail: " + lead.email,
           "Telefone: " + (lead.telefone || "não informado"),
@@ -374,7 +385,7 @@
         presave.reset();
         var note = document.getElementById("presave-status");
         note.hidden = false;
-        note.textContent = "Você está na lista local da LP Credenciais. Quando houver domínio e servidor, este contato precisa ser reenviado ao artista.";
+        note.textContent = "Você está na lista local da LP Vida Longa. Quando houver domínio e servidor, este contato precisa ser reenviado ao artista.";
         toast("Interesse na LP registrado neste navegador.");
       });
     }
@@ -425,7 +436,7 @@
       if (!id || frame.querySelector("iframe")) return;
       var iframe = document.createElement("iframe");
       iframe.src = "https://www.youtube-nocookie.com/embed/" + id + "?rel=0";
-      iframe.title = frame.getAttribute("data-title") || "Set de DJ Diplomata";
+      iframe.title = frame.getAttribute("data-title") || "Set de DJ Nicolas Silva no YouTube";
       iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
       iframe.allowFullscreen = true;
       frame.textContent = "";
@@ -442,18 +453,203 @@
           openPrefs();
           return;
         }
-        if (!frame.getAttribute("data-youtube")) {
-          toast("Ainda não há link oficial de set para incorporar.");
-          return;
-        }
         mount(frame);
       });
     });
 
-    document.addEventListener("dd:consent", function (event) {
+    document.addEventListener("ns:consent", function (event) {
       if (!event.detail.media) return;
       document.querySelectorAll(".media-frame[data-autoplay-on-consent]").forEach(mount);
     });
+  }
+
+  function initProgress() {
+    var bar = document.querySelector(".progress");
+    if (!bar) return;
+    function paint() {
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var value = max > 0 ? window.scrollY / max : 0;
+      bar.style.transform = "scaleX(" + value + ")";
+    }
+    paint();
+    window.addEventListener("scroll", paint, { passive: true });
+    window.addEventListener("resize", paint);
+  }
+
+  function initDock() {
+    var dock = document.getElementById("dock-cta");
+    if (!dock) return;
+    dock.hidden = true;
+    document.body.classList.remove("has-dock");
+  }
+
+  function initGallery() {
+    var photo = document.getElementById("hero-photo");
+    var caption = document.getElementById("hero-caption");
+    var slides = document.querySelectorAll(".hero-slides li");
+    var dialog = document.getElementById("lightbox");
+    var lightImg = document.getElementById("lightbox-img");
+    var lightCaption = document.getElementById("lightbox-caption");
+    var lightCount = document.getElementById("lightbox-count");
+    var rail = document.getElementById("rail");
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var heroIndex = 0;
+    var heroTimer = 0;
+    var railTimer = 0;
+    var railIntervalMs = 4500;
+    var lightIndex = 0;
+
+    function shots() {
+      return Array.prototype.slice.call(document.querySelectorAll("#rail [data-shot]"));
+    }
+
+    function showSlide(index) {
+      var slide = slides[index];
+      if (!photo || !slide) return;
+      heroIndex = index;
+      photo.style.opacity = "0.35";
+      window.setTimeout(function () {
+        photo.src = slide.getAttribute("data-src");
+        photo.alt = slide.getAttribute("data-alt") || "";
+        if (caption) caption.textContent = slide.getAttribute("data-caption") || "";
+        photo.style.opacity = "1";
+      }, reduce ? 0 : 140);
+    }
+
+    if (!reduce && slides.length > 1) {
+      heroTimer = window.setInterval(function () {
+        showSlide((heroIndex + 1) % slides.length);
+      }, 4600);
+    }
+
+    function showLight(index) {
+      var items = shots();
+      if (!dialog || !items.length || !lightImg) return;
+      lightIndex = (index + items.length) % items.length;
+      var item = items[lightIndex];
+      lightImg.src = item.getAttribute("data-src");
+      lightImg.alt = item.querySelector("img") ? item.querySelector("img").alt : "";
+      if (lightCaption) lightCaption.textContent = item.getAttribute("data-caption") || "";
+      if (lightCount) lightCount.textContent = (lightIndex + 1) + " / " + items.length;
+      if (typeof dialog.showModal === "function") dialog.showModal();
+    }
+
+    function openSrc(src) {
+      var items = shots();
+      var index = items.findIndex(function (item) {
+        return item.getAttribute("data-src") === src;
+      });
+      showLight(index < 0 ? 0 : index);
+    }
+
+    document.addEventListener("click", function (event) {
+      var opener = event.target.closest("[data-open]");
+      if (opener) {
+        openSrc(opener.getAttribute("data-open"));
+        return;
+      }
+      var shot = event.target.closest("#rail [data-shot]");
+      if (shot) showLight(shots().indexOf(shot));
+    });
+
+    if (dialog) {
+      dialog.addEventListener("click", function (event) {
+        var btn = event.target.closest("[data-lightbox]");
+        if (!btn) {
+          if (event.target === dialog) dialog.close();
+          return;
+        }
+        var action = btn.getAttribute("data-lightbox");
+        if (action === "close") dialog.close();
+        if (action === "next") showLight(lightIndex + 1);
+        if (action === "prev") showLight(lightIndex - 1);
+      });
+      dialog.addEventListener("keydown", function (event) {
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          showLight(lightIndex + 1);
+        }
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          showLight(lightIndex - 1);
+        }
+      });
+    }
+
+    function railItemLeft(item) {
+      if (!rail) return 0;
+      return item.getBoundingClientRect().left - rail.getBoundingClientRect().left + rail.scrollLeft;
+    }
+
+    function railScrollTarget(item) {
+      if (!rail) return 0;
+      var left = railItemLeft(item);
+      if (window.matchMedia("(max-width: 859px)").matches) {
+        return Math.max(0, left - (rail.clientWidth - item.offsetWidth) / 2);
+      }
+      return left;
+    }
+
+    function railIndex() {
+      var items = shots();
+      if (!rail || !items.length) return 0;
+      var scroll = rail.scrollLeft;
+      var index = 0;
+      var nearest = Infinity;
+      items.forEach(function (item, i) {
+        var dist = Math.abs(railScrollTarget(item) - scroll);
+        if (dist < nearest) {
+          nearest = dist;
+          index = i;
+        }
+      });
+      return index;
+    }
+
+    function stepRail(dir) {
+      var items = shots();
+      if (!rail || !items.length) return;
+      var next = (railIndex() + dir + items.length) % items.length;
+      rail.scrollTo({
+        left: railScrollTarget(items[next]),
+        behavior: reduce ? "auto" : "smooth"
+      });
+    }
+
+    function advanceRail() {
+      if (dialog && dialog.open) return;
+      stepRail(1);
+    }
+
+    function stopRailAutoplay() {
+      if (!railTimer) return;
+      window.clearInterval(railTimer);
+      railTimer = 0;
+    }
+
+    function startRailAutoplay() {
+      stopRailAutoplay();
+      if (reduce || !rail || shots().length < 2) return;
+      railTimer = window.setInterval(advanceRail, railIntervalMs);
+    }
+
+    if (rail) {
+      rail.addEventListener("keydown", function (event) {
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          stepRail(1);
+        }
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          stepRail(-1);
+        }
+      });
+      startRailAutoplay();
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) stopRailAutoplay();
+        else startRailAutoplay();
+      });
+    }
   }
 
   function initTabs() {
@@ -474,44 +670,6 @@
     });
   }
 
-  function initLightbox() {
-    var dialog = document.createElement("dialog");
-    dialog.className = "lightbox";
-    dialog.innerHTML = '<form method="dialog" class="lightbox-body"><button class="btn btn-ghost" value="close">Fechar</button><img alt=""><p class="lightbox-cap"></p></form>';
-    document.body.appendChild(dialog);
-    var img = dialog.querySelector("img");
-    var cap = dialog.querySelector(".lightbox-cap");
-    document.addEventListener("click", function (event) {
-      var btn = event.target.closest("[data-lightbox]");
-      if (!btn) return;
-      var source = btn.getAttribute("data-full");
-      var inner = btn.querySelector("img");
-      img.src = source || (inner ? inner.src : "");
-      img.alt = btn.getAttribute("data-caption") || "";
-      cap.textContent = btn.getAttribute("data-caption") || "";
-      if (typeof dialog.showModal === "function") dialog.showModal();
-    });
-    dialog.addEventListener("click", function (event) {
-      if (event.target === dialog) dialog.close();
-    });
-  }
-
-  function initTracks() {
-    var list = document.querySelector("[data-tracks]");
-    if (!list) return;
-    var note = document.querySelector("[data-track-note]");
-    list.addEventListener("click", function (event) {
-      var item = event.target.closest("[data-note]");
-      if (!item) return;
-      list.querySelectorAll("[data-note]").forEach(function (el) {
-        var on = el === item;
-        el.classList.toggle("is-on", on);
-        el.setAttribute("aria-pressed", on ? "true" : "false");
-      });
-      if (note) note.textContent = item.getAttribute("data-note");
-    });
-  }
-
   document.addEventListener("DOMContentLoaded", function () {
     initNav();
     initReveal();
@@ -522,7 +680,8 @@
     initFilters();
     initMedia();
     initTabs();
-    initLightbox();
-    initTracks();
+    initProgress();
+    initDock();
+    initGallery();
   });
 })();

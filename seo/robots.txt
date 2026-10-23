@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Fica em seo/ para a raiz do projeto guardar só index.html.
+# Na publicação, este arquivo precisa responder em /robots.txt
+# e seo/sitemap.xml em /sitemap.xml.
+Sitemap: /sitemap.xml
